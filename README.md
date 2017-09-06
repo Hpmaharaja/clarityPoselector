@@ -4,6 +4,15 @@ This repository is temporarily created for a Google maps implementation on a Rea
 ## Description
 This project is for a google maps implementation and user interaction for picking locations.
 
+## How to run project
+```
+git clone [Repository]
+cd clarityPoselector
+npm install
+npm start
+VISIT localhost:8080 TO INTERACT WITH APPLICATION
+```
+
 ## The Stack and Dependencies
 ### React-Native Dependencies and Dev-Dependencies
 ```

@@ -5,8 +5,9 @@ const GettingStartedGoogleMap = withGoogleMap(props => (
   <GoogleMap
     ref={props.onMapLoad}
     defaultZoom={10}
-    defaultCenter={{lat: props.startlat, lng: props.startlng}}
+    center={{lat: props.startlat, lng: props.startlng}}
     onClick={props.onMapClick}
+    onDragEnd={props.onDragEnd}
   >
     {props.marker.map(marker => (
       <Marker
@@ -37,9 +38,7 @@ class Poselector extends Component {
 
 		this.handleMapLoad = this.handleMapLoad.bind(this);
 		this.handleMapClick = this.handleMapClick.bind(this);
-		this.handleMarkerRightClick = this.handleMarkerRightClick.bind(this);
-		this.handleLongClick = this.handleLongClick.bind(this);
-		this.handleConfirmLocation = this.handleConfirmLocation.bind(this);
+		this.handleMapDrag = this.handleMapDrag.bind(this);
 	}
 
 	componentWillMount() {
@@ -74,7 +73,7 @@ class Poselector extends Component {
 		// Listen & Handle for a click event from user
 	    const newMarker = [
 	      {
-	        position: {lat: event.latLng.lat(), lng: event.latLng.lng()},
+	        position: {lat: this._mapComponent.getCenter().lat(), lng: this._mapComponent.getCenter().lat()},
 	        defaultAnimation: 2,
 	        key: Date.now(), 
 	      },
@@ -82,19 +81,11 @@ class Poselector extends Component {
 	    this.setState({marker: newMarker});
 	}
 
-	handleMarkerRightClick(targetMarker) {
-		// Listen and Handle Right Click for Removing the Pinned Location
-	    const nextMarkers = this.state.markers.filter(marker => marker !== targetMarker);
-	    this.setState({marker: nextMarkers});
-	}
-
-	handleLongClick() {
-		console.log('longpress');
-	}
-
-	handleConfirmLocation() {
-		// Alert the browser with the necessary latitude and longitude based on user's desire
-	  	alert('The latitude is: ' + this.state.marker[0].position.lat + ' and longitude is: ' + this.state.marker[0].position.lng);
+	handleMapDrag(event) {
+        let mapRef = this._mapComponent;
+        console.log(mapRef.getCenter().lat()+'; '+mapRef.getCenter().lng());
+		console.log('Map has been dragged');
+		this.setState({startlat: mapRef.getCenter().lat(), startlng: mapRef.getCenter().lat()});
 	}
 
 	render() {
@@ -106,9 +97,8 @@ class Poselector extends Component {
 					    <div className="nav-wrapper blue darken-3">
 					      <a href="#" className="brand-logo">Clarity Position Selector Component </a>
 					      <ul id="nav-mobile" className="right hide-on-med-and-down">
-					        <li><button onClick={this.handleConfirmLocation} className="btn blue lighten-1 waves-effect waves-dark">
-						  		Confirm Location 
-							</button></li>
+					      	<li><a>Latitude: {this.state.marker[0].position.lat}</a></li>
+					        <li><a>Longitude: {this.state.marker[0].position.lng}</a></li>
 					      </ul>
 					    </div>
 					</nav>
@@ -121,9 +111,8 @@ class Poselector extends Component {
 		          }
 		          onMapLoad={this.handleMapLoad}
 		          onMapClick={this.handleMapClick}
-		          onMapLongClick={this.handleLongClick}
+		          onDragEnd ={this.handleMapDrag}
 		          marker={this.state.marker}
-		          onMarkerRightClick={this.handleMarkerRightClick}
 		          startlat={this.state.startlat}
 		          startlng={this.state.startlng}
 		        />

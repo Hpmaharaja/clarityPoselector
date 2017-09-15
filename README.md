@@ -4,6 +4,11 @@ This repository is temporarily created for a Google maps implementation on a Rea
 ## Description
 This project is for a google maps implementation and user interaction for picking locations.
 
+## Additional Sources Utilized
+  https://github.com/tomchentw/react-google-maps
+  https://tomchentw.github.io/react-google-maps/#googlemap
+  https://developers.google.com/maps/documentation/javascript/reference#LatLngBounds
+
 ## How to run project
 ```
 git clone [Repository]
@@ -24,12 +29,14 @@ VISIT localhost:8080 TO INTERACT WITH APPLICATION
     "react-google-maps": "^7.2.0"
   },
   "devDependencies": {
+    "babel-core": "*",
     "babel-loader": "^7.1.2",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
-    "babel-core": "*",
-    "webpack": "^3.5.5",
+    "css-loader": "^0.28.7",
+    "style-loader": "^0.18.2",
+    "webpack": "^3.5.6",
     "webpack-dev-server": "^2.7.1"
   }
 

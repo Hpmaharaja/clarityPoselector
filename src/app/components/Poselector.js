@@ -1,43 +1,34 @@
+// Import basic React and Google Maps component tools
 import React, { Component } from 'react';
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 
+// Import an external CSS file delivered by webpac pre-loader configs
+import styles from '../styles/clarity.css';
+
+// Create a const function to return the GoogleMap component
 const GettingStartedGoogleMap = withGoogleMap(props => (
   <GoogleMap
     ref={props.onMapLoad}
-    defaultZoom={10}
+    defaultZoom={18}
     center={{lat: props.startlat, lng: props.startlng}}
-    onClick={props.onMapClick}
     onDragEnd={props.onDragEnd}
-  >
-    {props.marker.map(marker => (
-      <Marker
-        {...marker}
-        onRightClick={() => props.onMarkerRightClick(marker)}
-      />
-    ))}
+    onDragStart={props.onDragEnd}>
+    <div className={styles.centerMarker}></div>
   </GoogleMap>
 ));
 
+// Define and Construct the main Position Selector Component
 class Poselector extends Component {
 	constructor(props) {
-		// This constructor sets up the initial data/bindings required throuhgout the component
+		// This constructor sets up the initial data bindings required throuhgout the component
 		super(props);
 
 		this.state = {
-			marker: [{
-				position: {
-					lat: 25.0112183,
-					lng: 121.52067570000001,
-				},
-				key: `Irvine`,
-				defaultAnimation: 2
-			}],
 			startlat: 0,
 			startlng: 0
 		};
 
 		this.handleMapLoad = this.handleMapLoad.bind(this);
-		this.handleMapClick = this.handleMapClick.bind(this);
 		this.handleMapDrag = this.handleMapDrag.bind(this);
 	}
 
@@ -48,13 +39,7 @@ class Poselector extends Component {
 			    var latitude = position.coords.latitude;
 				var longitude = position.coords.longitude;
 				this.setState({startlat: latitude, 
-							   startlng: longitude, 
-							   marker: [{
-							        position: {lat: latitude, lng: longitude},
-							        defaultAnimation: 2,
-							        key: Date.now(), 
-			      				},]
-			    });
+							   startlng: longitude});
 			});
 		} else {
 			console.log('Broswer does not support geolocation!');
@@ -65,27 +50,15 @@ class Poselector extends Component {
 		// Simple check for when map is loaded
 		this._mapComponent = map;
 		if (map) {
-			console.log('Map is loaded!');
+			// console.log('Check: Map is loaded!');
 		}
 	}
 
-	handleMapClick(event) {
-		// Listen & Handle for a click event from user
-	    const newMarker = [
-	      {
-	        position: {lat: this._mapComponent.getCenter().lat(), lng: this._mapComponent.getCenter().lat()},
-	        defaultAnimation: 2,
-	        key: Date.now(), 
-	      },
-	    ];
-	    this.setState({marker: newMarker});
-	}
-
 	handleMapDrag(event) {
+		// Update the center coordinates when user drags (occurs on both start and end drags)
         let mapRef = this._mapComponent;
-        console.log(mapRef.getCenter().lat()+'; '+mapRef.getCenter().lng());
-		console.log('Map has been dragged');
-		this.setState({startlat: mapRef.getCenter().lat(), startlng: mapRef.getCenter().lat()});
+        // console.log(mapRef.getBounds().getCenter());
+		this.setState({startlat: mapRef.getBounds().getCenter().lat(), startlng: mapRef.getBounds().getCenter().lng()});
 	}
 
 	render() {
@@ -93,26 +66,20 @@ class Poselector extends Component {
 	  	if (this.state.startlat != 0) {
 		    return (
 		        <div>
-			      	<nav>
-					    <div className="nav-wrapper blue darken-3">
-					      <a href="#" className="brand-logo">Clarity Position Selector Component </a>
-					      <ul id="nav-mobile" className="right hide-on-med-and-down">
-					      	<li><a>Latitude: {this.state.marker[0].position.lat}</a></li>
-					        <li><a>Longitude: {this.state.marker[0].position.lng}</a></li>
-					      </ul>
-					    </div>
-					</nav>
+					 <div className="collection">
+						<a href="#" className="collection-item active" style={{'textAlign': `center`}}>Clarity React Position Selector</a>
+					    <a href="#" className="collection-item active" style={{'textAlign': `center`}}>Lat: {this.state.startlat}</a>
+					    <a href="#" className="collection-item active" style={{'textAlign': `center`}}>Long: {this.state.startlng}</a>
+				    </div>
 		        <GettingStartedGoogleMap
 		          containerElement={
-		            <div style={{ height: `100%` }} />
+		            <div style={{ height: `100%`, 'marginTop': `-15px` }} />
 		          }
 		          mapElement={
-		            <div style={{ height: `800px` }} />
+		            <div style={{ position: 'absolute', top: `139px`, left: 0, right: 0, bottom: 0 }} />
 		          }
 		          onMapLoad={this.handleMapLoad}
-		          onMapClick={this.handleMapClick}
 		          onDragEnd ={this.handleMapDrag}
-		          marker={this.state.marker}
 		          startlat={this.state.startlat}
 		          startlng={this.state.startlng}
 		        />
